@@ -17,8 +17,6 @@ pipeline {
                 sh '''
                 sh build.sh
                 '''
-                
-
             }
         }
         stage('Deploy') {
