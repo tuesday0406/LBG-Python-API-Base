@@ -12,7 +12,7 @@ pipeline {
                 '''
            }
         }
-        stage ('Build')
+        stage ('Build') {
             steps{
                 sh '''
                 sh build.sh
@@ -29,6 +29,7 @@ pipeline {
                 
             }
     }
+}
 }
     
 
