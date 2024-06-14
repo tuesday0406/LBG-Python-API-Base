@@ -3,6 +3,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'lbg/1.0'
         PORT = "8080"
+        DOCKER_CREDS = credentials('dockerhub')
     }
     stages {
         stage('Cleanup') {
@@ -27,6 +28,15 @@ pipeline {
                 
             }
     }
+    stage('Push to dockerhub') {
+            steps {
+                sh '''
+                docker login -u $DOCKER_CREDS_USR -p $DOCKER_CREDS_PSW
+                docker push $DOCKER_CREDS_USR/$DOCKER_IMAGE
+                docker logout
+                '''
+            }
+        }
 }
 }
     
