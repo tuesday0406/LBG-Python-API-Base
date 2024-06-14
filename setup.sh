@@ -39,3 +39,4 @@ modify_app
 build_docker
 run_docker
 echo "Build process completed successfully."
+echo "testing!!"
