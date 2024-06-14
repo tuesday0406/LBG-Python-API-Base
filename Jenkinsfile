@@ -8,7 +8,7 @@ pipeline {
         stage('Cleanup') {
             steps {
                 sh '''
-                sh sh setup.sh
+                sh setup.sh
                 '''
            }
         }
