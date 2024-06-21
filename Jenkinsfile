@@ -1,45 +1,29 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = 'lbg/1.0'
-        PORT = "8080"
-        DOCKER_CREDS = credentials('dockerhub')
+        GCR_CREDENTIALS_ID = 'tuesday' // The ID you provided in Jenkins credentials
+        IMAGE_NAME = 'harishnavy-build-1'
+        GCR_URL = 'gcr.io/lbg-mea-build-c19'
     }
     stages {
-        stage('Cleanup') {
+        stage('Build and Push to GCR') {
             steps {
-                sh '''
-                sh setup.sh
-                '''
-           }
-        }
-        stage ('Build') {
-            steps{
-                sh '''
-                sh build.sh
-                '''
+                script {
+                    // Authenticate with Google Cloud
+                    withCredentials([file(credentialsId: GCR_CREDENTIALS_ID, variable: 'GOOGLE_APPLICATION_CRE>
+                        sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
+                    }
+                // Configure Docker to use gcloud as a credential helper
+                sh 'gcloud auth configure-docker --quiet'
+                // Build the Docker image
+                sh "docker build -t ${GCR_URL}/${IMAGE_NAME}:${BUILD_NUMBER} ."
+                // Push the Docker image to GCR
+                sh "docker push ${GCR_URL}/${IMAGE_NAME}:${BUILD_NUMBER}"
+                }
             }
         }
-        stage('Deploy') {
-            steps {
-                sh '''
-                sh deploy.sh"
-                '''
-                
-            }
     }
-    stage('Push to dockerhub') {
-            steps {
-                sh '''
-                docker login -u $DOCKER_CREDS_USR -p $DOCKER_CREDS_PSW
-                docker push $DOCKER_CREDS_USR/$DOCKER_IMAGE
-                docker logout
-                '''
-            }
-        }
 }
-}
-    
 
 
 
